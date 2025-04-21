@@ -10,14 +10,14 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="name">Name</label>
-                        <input type="text" name="name" id="name" class="form-control" placeholder="Name">	
+                        <input  type="text" name="name" id="name" class="form-control" placeholder="Name" value="{{$category->name}}">	
                         <p></p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="email">Slug</label>
-                        <input type="text" name="slug" id="slug" class="form-control" placeholder="Slug">	
+                        <input type="text" name="slug" id="slug" class="form-control" placeholder="Slug" value="{{$category->slug}}">	
                         <p></p>
                     </div>
                 </div>			
@@ -32,13 +32,18 @@
                             </div>
                         </div>
                     </div>
+                    @if(!empty($category->image))
+                    <div>
+                        <img width="250" src="{{asset('uploads/category/thumb/'.$category->image)}}" alt="">
+                    </div>
+                    @endif
                 </div>	
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="email">Status</label>
                         <select name="status" id="slug" class="form-control" placeholder="Slug" >
-                            <option value="1">block</option>
-                            <option value="2">unclock</option>
+                            <option {{($category->status == 1) ? 'selected' : ''}} value="1">block</option>
+                            <option {{($category->status == 0) ? 'selected' : ''}} value="0">unclock</option>
                         </select>
                     </div>
                 </div>	
@@ -49,7 +54,7 @@
         </div>							
     </div>
     <div class="pb-5 pt-3">
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Update</button>
         <a href="{{route('categories.index')}}" class="btn btn-outline-dark ml-3">Cancel</a>
     </div>
 </form>
@@ -66,8 +71,8 @@
             var element = $(this);
             $("button[type=submit]").prop('disabled',true);
             $.ajax({
-                url:'{{ route("categories.store")}}',
-                type:'post',
+                url:'{{ route("categories.update",$category->id)}}',
+                type:'put',
                 data: element.serializeArray(),
                 dataType:'json',
                 success:function(response){

@@ -7,33 +7,33 @@
             <li class="nav-item">
                 <a href="dashboard.html" class="nav-link">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
-                    <p>Dashboard</p>
+                    <p>Trang chủ</p>
                 </a>																
             </li>
             <li class="nav-item">
                 <a href="{{ route ('categories.index')}}" class="nav-link">
                     <i class="nav-icon fas fa-file-alt"></i>
+                    <p>Danh Mục Sản Phẩm</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route ('subcategories.index')}}" class="nav-link">
+                    <i class="nav-icon fas fa-file-alt"></i>
                     <p>Loại Sản Phẩm</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="subcategory.html" class="nav-link">
-                    <i class="nav-icon fas fa-file-alt"></i>
-                    <p>Sub Category</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="brands.html" class="nav-link">
+                <a href="{{ route ('brands.index')}}" class="nav-link">
                     <svg class="h-6 nav-icon w-6 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16 4v12l-4-2-4 2V4M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                       </svg>
-                    <p>Brands</p>
+                    <p>Nhãn Hàng</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="products.html" class="nav-link">
+                <a href="{{ route ('products.index')}}" class="nav-link">
                     <i class="nav-icon fas fa-tag"></i>
-                    <p>Products</p>
+                    <p>Sản Phẩm</p>
                 </a>
             </li>
             
@@ -41,7 +41,7 @@
                 <a href="#" class="nav-link">
                     <!-- <i class="nav-icon fas fa-tag"></i> -->
                     <i class="fas fa-truck nav-icon"></i>
-                    <p>Shipping</p>
+                    <p>Vận Chuyển</p>
                 </a>
             </li>							
             <li class="nav-item">
@@ -53,13 +53,13 @@
             <li class="nav-item">
                 <a href="discount.html" class="nav-link">
                     <i class="nav-icon  fa fa-percent" aria-hidden="true"></i>
-                    <p>Discount</p>
+                    <p>Mã Giảm Giá</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="users.html" class="nav-link">
                     <i class="nav-icon  fas fa-users"></i>
-                    <p>Users</p>
+                    <p>Thông tin Người Dùng</p>
                 </a>
             </li>
             <li class="nav-item">
