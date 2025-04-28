@@ -42,8 +42,8 @@
                     <div class="mb-3">
                         <label for="email">Status</label>
                         <select name="status" id="slug" class="form-control" placeholder="Slug" >
-                            <option {{($category->status == 1) ? 'selected' : ''}} value="1">block</option>
-                            <option {{($category->status == 0) ? 'selected' : ''}} value="0">unclock</option>
+                            <option {{($category->status == 1) ? 'selected' : ''}} value="1">Hiển Thị</option>
+                            <option {{($category->status == 0) ? 'selected' : ''}} value="0">Ẩn</option>
                         </select>
                     </div>
                 </div>	

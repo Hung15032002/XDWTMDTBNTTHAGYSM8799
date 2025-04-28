@@ -37,8 +37,8 @@
                     <div class="mb-3">
                         <label for="email">Status</label>
                         <select name="status" id="slug" class="form-control" placeholder="Slug" >
-                            <option value="1">block</option>
-                            <option value="2">unclock</option>
+                            <option value="1">Hiển Thị</option>
+                            <option value="0">Ẩn</option>
                         </select>
                     </div>
                 </div>	

@@ -9,6 +9,7 @@
 		<!-- Font Awesome -->
 		<link rel="stylesheet" href="{{ asset('admin_ass/plugins/fontawesome-free/css/all.min.css')}}">
 		<link rel="stylesheet" href="{{ asset('admin_ass/plugins/dropzone/min/dropzone.min.css')}}">
+	
 		<!-- Theme style -->
 		<link rel="stylesheet" href="{{ asset('admin_ass/css/adminlte.min.css')}}">
 		<link rel="stylesheet" href=" {{ asset('admin_ass/css/custom.css')}}">

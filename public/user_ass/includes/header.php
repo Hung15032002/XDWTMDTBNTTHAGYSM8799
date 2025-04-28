@@ -2,7 +2,7 @@
 <html class="no-js" lang="en_AU" />
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title><?php echo (!empty($title)) ? 'Title-'.$title: 'Home'; ?></title>
+    <title> NỘI THẤT ĐÀ NẴNG</title>
 	<meta name="description" content="" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no" />
 
@@ -29,12 +29,15 @@
 	<meta name="twitter:image" content="" />
 	<meta name="twitter:image:alt" content="" />
 	<meta name="twitter:card" content="summary_large_image" />
-	
+ 
+    {{ asset('user_ass/css/css/style.css?v=<?php echo rand(111,999); ?>')}}
 
-	<link rel="stylesheet" type="text/css" href="css/slick.css" />
-	<link rel="stylesheet" type="text/css" href="css/slick-theme.css" />
-	<link rel="stylesheet" type="text/css" href="css/video-js.css" />
-    <link rel="stylesheet" type="text/css" href="css/style.css?v=<?php echo rand(111,999); ?>" />
+	<link rel="stylesheet" type="text/css" href="{{ asset('user_ass/css/slick.css')}}" />
+
+	<link rel="stylesheet" type="text/css" href="{{ asset('user_ass/slick-theme.css')}}" />
+	<link rel="stylesheet" type="text/css" href=" {{ asset('user_ass/css/video-js.css')}}" />
+    <link rel="stylesheet" type="text/css" href="   {{ asset('user_ass/css/style.css')}}" />
+
 
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 	<link rel="preconnect" href="https://fonts.googleapis.com">

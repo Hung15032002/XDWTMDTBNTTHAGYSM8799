@@ -166,4 +166,6 @@ class ProductController extends Controller
             File::delete(public_path('uploads/product/thumb/' . $product->image));
         }
     }
+    
+    
 }

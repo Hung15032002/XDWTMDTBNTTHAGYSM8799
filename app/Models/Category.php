@@ -10,4 +10,10 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'slug', 'status'];
+
+    // Quan hệ với Subcategory
+    public function subcategories()
+    {
+        return $this->hasMany(Subcategory::class); // Category có nhiều Subcategory
+    }
 }

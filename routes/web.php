@@ -8,14 +8,25 @@ use App\Http\Controllers\admin\HomeController;
 use App\Http\Controllers\admin\SubcategoryController;
 use App\Http\Controllers\admin\TempImagesController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\FrontController;
+use App\Http\Controllers\ProductshowController;
+use App\Http\Controllers\Shopcontroller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
+Route::get('/', [FrontController::class, 'index'])->name('front.home');
 
+Route::get('/subcategory-products/{id}', [FrontController::class, 'getProductsBySubcategory']);
+
+Route::get('/shop/category/{id}', [ShopController::class, 'category'])->name('shop.category');
+
+Route::get('/shop', [Shopcontroller::class, 'index'])->name('front.shop');
+
+Route::get('/productshow', [ProductshowController::class, 'index'])->name('front.productshow');
 
 Route::group(['prefix' => 'admin'],function(){
 
@@ -67,7 +78,7 @@ Route::group(['Middleware' => 'admin.auth'],function(){
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     
-    // ✅ AJAX route xóa nhanh (nếu cần gọi với ID cụ thể từ JavaScript)
+    
     Route::delete('/products/delete/{id}', [ProductController::class, 'destroy'])->name('products.ajax.destroy');
     // temp-images.create
     Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
