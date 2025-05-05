@@ -6,7 +6,7 @@
         <div class="container">
             <div class="light-font">
                 <ol class="breadcrumb primary-color mb-0">
-                    <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="white-text" href="{{ route('front.home') }}">Home</a></li>
                     <li class="breadcrumb-item active">Shop</li>
                 </ol>
             </div>
@@ -141,18 +141,23 @@
                             <div class="col-md-4 mb-4">
                                 <div class="card product-card">
                                     <div class="product-image position-relative">
-                                        <a href="#" class="product-img">
+                                        <a href="{{ route('front.product.show', $product->id) }}" class="product-img">
                                             <img class="card-img-top" src="{{ asset('uploads/product/' . $product->image) }}" alt="{{ $product->name }}">
                                         </a>
                                         <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
                                         <div class="product-action">
-                                            <a class="btn btn-dark" href="#">
-                                                <i class="fa fa-shopping-cart"></i> Add To Cart
-                                            </a>
+                                            <!-- Form for adding to cart -->
+                                            <form method="POST" action="{{ route('cart.addToCart', ['id' => $product->id]) }}" class="add-to-cart-form d-inline" data-product-id="{{ $product->id }}">
+                                                @csrf
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-dark mt-2 add-to-cart-btn">
+                                                    <i class="fa fa-shopping-cart"></i> Add To Cart
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                     <div class="card-body text-center mt-3">
-                                        <a class="h6 link" href="#">{{ $product->name }}</a>
+                                        <a class="h6 link" href="{{ route('front.product.show', $product->id) }}">{{ $product->name }}</a>
                                         <div class="price mt-2">
                                             <span class="h5"><strong>{{ number_format($product->price) }} VND</strong></span>
                                             @if($product->old_price)
@@ -178,4 +183,53 @@
         </div>
     </section>
 </section>
+
+@section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+
+<script>
+document.querySelectorAll('.add-to-cart-form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Ngừng reload trang
+
+        const productId = form.getAttribute('data-product-id');
+        const quantity = form.querySelector('input[name="quantity"]').value;
+
+        // Tạo đối tượng FormData để gửi dữ liệu giống như submit form thật
+        const formData = new FormData();
+        formData.append('quantity', quantity);
+        formData.append('_token', '{{ csrf_token() }}');
+
+        // Gửi yêu cầu AJAX
+        fetch(`/add-to-cart/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        .then(response => response.json()) // Đọc phản hồi dưới dạng JSON
+        .then(data => {
+            // Nếu thêm vào giỏ thành công
+            if (data.success) {
+                toastr.success(data.success); // Hiển thị thông báo thành công
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) {
+                    cartCountElement.textContent = data.cartCount; // Cập nhật số lượng giỏ hàng
+                }
+            } else {
+                toastr.error(data.error || 'Thêm sản phẩm thất bại!');
+            }
+        })
+        .catch(error => {
+            toastr.error('Lỗi khi thêm vào giỏ hàng!');
+            console.error(error);
+        });
+    });
+});
+
+</script>
+@endsection
+
 @endsection

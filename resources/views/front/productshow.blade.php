@@ -5,9 +5,9 @@
     <div class="container">
         <div class="light-font">
             <ol class="breadcrumb primary-color mb-0">
-                <li class="breadcrumb-item"><a class="white-text" href="#">Home</a></li>
-                <li class="breadcrumb-item"><a class="white-text" href="#">Shop</a></li>
-                <li class="breadcrumb-item">Your product name</li>
+                <li class="breadcrumb-item"><a class="white-text" href="{{ route('front.home') }}">Home</a></li>
+                <li class="breadcrumb-item"><a class="white-text" href="{{ route('front.shop') }}">Shop</a></li>
+                <li class="breadcrumb-item">{{ $product->title }}</li>
             </ol>
         </div>
     </div>
@@ -15,22 +15,19 @@
 
 <section class="section-7 pt-3 mb-3">
     <div class="container">
-        <div class="row ">
+        <div class="row">
             <div class="col-md-5">
                 <div id="product-carousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner bg-light">
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="images/product-1.jpg" alt="Image">
-                        </div>
-                        <div class="carousel-item active">
-                            <img class="w-100 h-100" src="images/product-2.jpg" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="images/product-3.jpg" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="images/product-4.jpg" alt="Image">
-                        </div>
+                        @if (!empty($product->images) && is_array($product->images))
+                            @foreach($product->images as $key => $image)
+                                <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                                    <img class="card-img-top" src="{{ asset('uploads/product/thumb/'.$image) }}" alt="{{ $product->title }}">
+                                </div>
+                            @endforeach
+                        @else
+                            <p>No images available</p>
+                        @endif
                     </div>
                     <a class="carousel-control-prev" href="#product-carousel" data-bs-slide="prev">
                         <i class="fa fa-2x fa-angle-left text-dark"></i>
@@ -40,165 +37,110 @@
                     </a>
                 </div>
             </div>
+
             <div class="col-md-7">
-                <div class="bg-light right">
-                    <h1>Your Product Name Here</h1>
-                    <div class="d-flex mb-3">
-                        <div class="text-primary mr-2">
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star-half-alt"></small>
-                            <small class="far fa-star"></small>
-                        </div>
-                        <small class="pt-1">(99 Reviews)</small>
+                <div class="bg-light right" >
+                    <div class="bg-light p-4 rounded shadow-sm">
+                        <h2 class="mb-3" style="font-size: 24px; font-weight: 600; color: #333;">
+                            Thông tin sản phẩm
+                        </h2>
+                    
+                        <ul class="list-unstyled" style="font-size: 16px; color: #444;">
+                            <li class="mb-3"><strong>Tên sản phẩm:</strong> {{ $product->title }}</li>
+                    
+                            <li class="mb-3">
+                                <strong>Giá:</strong> 
+                                @if($product->price_compare)
+                                    <del class="text-muted">{{ number_format($product->price_compare, 2) }} VNĐ</del>
+                                @endif
+                                <span class="text-danger fw-bold ms-2">{{ number_format($product->price, 2) }} VNĐ</span>
+                            </li>
+                            <li class="mb-3"><strong>Mã sản phẩm:</strong> {{ $product->code ?? 'N/A' }}</li>
+                            <li class="mb-3"><strong>Xuất xứ:</strong> {{ $product->origin ?? 'Đang cập nhật' }}</li>
+                            <li class="mb-3"><strong>Chất liệu:</strong> {{ $product->material ?? 'Đang cập nhật' }}</li>
+                            <li class="mb-3"><strong>Kích thước:</strong> {{ $product->dimensions ?? 'Đang cập nhật' }}</li>
+                            <li class="mb-3"><strong>Màu Sắc:</strong> {{ $product->color ?? 'Đang cập nhật' }}</li>
+                            <li class="mb-3"><strong>Bảo Hành:</strong> {{ $product->warranty ?? '1 Năm' }}</li>
+                            <li class="mb-3"><strong>Chú thích:</strong> {{ $product->description  ?? 'N/A' }}</li>
+                            <li class="mb-3"><strong>Thông tin vận chuyển:</strong> Giao hàng toàn quốc trong 2 - 5 ngày làm việc.</li>
+                            <li class="mb-3">
+                                <strong>Tình trạng:</strong> 
+                                @if($product->status == 1)
+                                    <span class="text-success">Còn hàng</span>
+                                @else
+                                    <span class="text-danger">Hết hàng</span>
+                                @endif
+                            </li>
+                            <li class="mb-3">
+                                <strong>Liên Hệ:</strong> 
+                                <span class="text-success">0123456789</span>
+                            </li>
+                        </ul>
                     </div>
-                    <h2 class="price text-secondary"><del>$400</del></h2>
-                    <h2 class="price ">$300</h2>
-
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis officiis dolor aut nihil iste porro ullam repellendus inventore voluptatem nam veritatis exercitationem doloribus voluptates dolorem nobis voluptatum qui, minus facere.</p>
-                    <a href="cart.php" class="btn btn-dark"><i class="fas fa-shopping-cart"></i> &nbsp;ADD TO CART</a>
-                </div>
+                    
             </div>
 
-            <div class="col-md-12 mt-5">
-                <div class="bg-light">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false">Shipping & Returns</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
-                            <p>
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi.
-                            </p>
-                        </div>
-                        <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sit, incidunt blanditiis suscipit quidem magnam doloribus earum hic exercitationem. Distinctio dicta veritatis alias delectus quaerat, quam sint ab nulla aperiam commodi.</p>
-                        </div>
-                        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                        
-                        </div>
-                    </div>
-                </div>
-            </div> 
-        </div>           
-    </div>
-</section>
 
-<section class="pt-5 section-8">
-    <div class="container">
-        <div class="section-title">
-            <h2>Related Products</h2>
-        </div> 
-        <div class="col-md-12">
-            <div id="related-products" class="carousel">
-                <div class="card product-card">
-                    <div class="product-image position-relative">
-                        <a href="" class="product-img"><img class="card-img-top" src="images/product-1.jpg" alt=""></a>
-                        <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
 
-                        <div class="product-action">
-                            <a class="btn btn-dark" href="#">
-                                <i class="fa fa-shopping-cart"></i> Add To Cart
-                            </a>                            
-                        </div>
-                    </div>                        
-                    <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="">Dummy Product Title</a>
-                        <div class="price mt-2">
-                            <span class="h5"><strong>$100</strong></span>
-                            <span class="h6 text-underline"><del>$120</del></span>
-                        </div>
-                    </div>                        
-                </div> 
-                <div class="card product-card">
-                    <div class="product-image position-relative">
-                        <a href="" class="product-img"><img class="card-img-top" src="images/product-1.jpg" alt=""></a>
-                        <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
-
-                        <div class="product-action">
-                            <a class="btn btn-dark" href="#">
-                                <i class="fa fa-shopping-cart"></i> Add To Cart
-                            </a>                            
-                        </div>
-                    </div>                        
-                    <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="">Dummy Product Title</a>
-                        <div class="price mt-2">
-                            <span class="h5"><strong>$100</strong></span>
-                            <span class="h6 text-underline"><del>$120</del></span>
-                        </div>
-                    </div>                        
-                </div> 
-                <div class="card product-card">
-                    <div class="product-image position-relative">
-                        <a href="" class="product-img"><img class="card-img-top" src="images/product-1.jpg" alt=""></a>
-                        <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
-
-                        <div class="product-action">
-                            <a class="btn btn-dark" href="#">
-                                <i class="fa fa-shopping-cart"></i> Add To Cart
-                            </a>                            
-                        </div>
-                    </div>                        
-                    <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="">Dummy Product Title</a>
-                        <div class="price mt-2">
-                            <span class="h5"><strong>$100</strong></span>
-                            <span class="h6 text-underline"><del>$120</del></span>
-                        </div>
-                    </div>                        
-                </div> 
-                <div class="card product-card">
-                    <div class="product-image position-relative">
-                        <a href="" class="product-img"><img class="card-img-top" src="images/product-1.jpg" alt=""></a>
-                        <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
-
-                        <div class="product-action">
-                            <a class="btn btn-dark" href="#">
-                                <i class="fa fa-shopping-cart"></i> Add To Cart
-                            </a>                            
-                        </div>
-                    </div>                        
-                    <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="">Dummy Product Title</a>
-                        <div class="price mt-2">
-                            <span class="h5"><strong>$100</strong></span>
-                            <span class="h6 text-underline"><del>$120</del></span>
-                        </div>
-                    </div>                        
-                </div> 
-                <div class="card product-card">
-                    <div class="product-image position-relative">
-                        <a href="" class="product-img"><img class="card-img-top" src="images/product-1.jpg" alt=""></a>
-                        <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
-
-                        <div class="product-action">
-                            <a class="btn btn-dark" href="#">
-                                <i class="fa fa-shopping-cart"></i> Add To Cart
-                            </a>                            
-                        </div>
-                    </div>                        
-                    <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="">Dummy Product Title</a>
-                        <div class="price mt-2">
-                            <span class="h5"><strong>$100</strong></span>
-                            <span class="h6 text-underline"><del>$120</del></span>
-                        </div>
-                    </div>                        
-                </div> 
-            </div>
+          
         </div>
     </div>
 </section>
-   
+<section class="pt-5 section-8">
+    <section class="pt-5 section-8">
+        <div class="container">
+            <div class="section-title">
+                <h2>Sản phẩm liên quan</h2>
+            </div>
+            <div class="row">
+                @forelse($relatedProducts as $related)
+                    <div class="col-md-3 mb-4">
+                        <div class="card product-card">
+                            <div class="product-image position-relative">
+                                <a href="{{ route('front.product.show', $related->id) }}" class="product-img">
+                                    @php
+                                        // Giải mã chuỗi ảnh từ trường 'image'
+                                        $images = explode(',', $related->image); 
+                                        // Kiểm tra và lấy ảnh đầu tiên
+                                        $thumb = isset($images[0]) ? $images[0] : 'default.jpg'; 
+                                    @endphp
+    
+                                    <!-- Kiểm tra và hiển thị ảnh -->
+                                    <img class="card-img-top" 
+                                        src="{{ asset('uploads/product/thumb/' . $thumb) }}" 
+                                        alt="{{ $related->name }}"
+                                        onerror="this.src='{{ asset('uploads/product/thumb/default.jpg') }}';">
+                                </a>
+    
+                                <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
+    
+                                <div class="product-action">
+                                    <a class="btn btn-dark" href="">
+                                        <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                                    </a>
+                                </div>
+                            </div>
+    
+                            <div class="card-body text-center mt-3">
+                                <!-- Hiển thị tên sản phẩm và liên kết tới chi tiết sản phẩm -->
+                                <a class="h6 text-underline" href="{{ route('front.product.show', $product->id) }}">{{ $product->name }}</a>
+                                    {{ $related->title }} <!-- Hiển thị tên sản phẩm -->
+                                </a>
+                                <div class="price mt-2">
+                                    <span class="h5"><strong>{{ number_format($related->price, 0) }} VNĐ</strong></span>
+                                    @if($related->price_compare)
+                                        <span class="h6 text-underline"><del>{{ number_format($related->price_compare, 0) }} VNĐ</del></span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center">Không có sản phẩm liên quan.</p>
+                @endforelse
+            </div>
+        </div>
+    </section>
 </section>
+
 @endsection

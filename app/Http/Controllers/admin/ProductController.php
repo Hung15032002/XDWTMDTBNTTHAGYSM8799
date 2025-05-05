@@ -70,10 +70,6 @@ class ProductController extends Controller
         return response()->json(['status' => true, 'message' => 'Xóa sản phẩm thành công!']);
     }
 
-    // ================================
-    // 🔧 HÀM DÙNG CHUNG
-    // ================================
-
     private function saveProduct(Product $product, Request $request, $isUpdate = false)
     {
         $rules = [
@@ -84,6 +80,13 @@ class ProductController extends Controller
             'code' => 'required|unique:products,code' . ($isUpdate ? ',' . $product->id : ''),
             'brand_id' => 'nullable|exists:brands,id',
             'subcategory_id' => 'nullable|exists:subcategories,id',
+
+            // Thêm validate cho thuộc tính mới
+            'origin' => 'nullable|string|max:255',
+            'material' => 'nullable|string|max:255',
+            'dimensions' => 'nullable|string|max:255',
+            'color' => 'nullable|string|max:255',
+            'warranty' => 'nullable|string|max:255',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -96,8 +99,20 @@ class ProductController extends Controller
         }
 
         $product->fill($request->only([
-            'name', 'slug', 'price', 'qty', 'code', 'description', 'status',
-            'brand_id', 'subcategory_id'
+            'name',
+            'slug',
+            'price',
+            'qty',
+            'code',
+            'description',
+            'status',
+            'brand_id',
+            'subcategory_id',
+            'origin',
+            'material',
+            'dimensions',
+            'color',
+            'warranty'
         ]));
 
         $product->save();
@@ -143,7 +158,6 @@ class ProductController extends Controller
             $encoded = $image->encode(new JpegEncoder());
             file_put_contents($thumbPath, $encoded);
 
-            // Nếu đang update thì xóa ảnh cũ
             if ($isUpdate && $product->image && File::exists(public_path('uploads/product/' . $product->image))) {
                 File::delete(public_path('uploads/product/' . $product->image));
                 File::delete(public_path('uploads/product/thumb/' . $product->image));
@@ -155,7 +169,7 @@ class ProductController extends Controller
             File::delete($sourcePath);
             $tempImage->delete();
 
-            break; // Chỉ lưu 1 ảnh
+            break;
         }
     }
 
@@ -166,6 +180,18 @@ class ProductController extends Controller
             File::delete(public_path('uploads/product/thumb/' . $product->image));
         }
     }
-    
-    
+
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Lấy 4 sản phẩm cùng subcategory, ngoại trừ sản phẩm hiện tại
+        $relatedProducts = Product::where('subcategory_id', $product->subcategory_id)
+            ->where('id', '!=', $product->id)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+
+        return view('front.product-detail', compact('product', 'relatedProducts'));
+    }
 }

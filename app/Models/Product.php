@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +18,12 @@ class Product extends Model
         'qty',
         'subcategory_id',
         'brand_id',
-        'status' // 👈 thêm dòng này
+        'status',
+        'origin', 
+        'material', 
+        'dimensions', 
+        'color', 
+        'warranty'
     ];
 
     // Mối quan hệ với Subcategory

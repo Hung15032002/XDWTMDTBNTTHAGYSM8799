@@ -68,6 +68,36 @@
                         <p class="text-danger" id="error-subcategory_id"></p>
                     </div>
 
+                    <div class="col-md-6 mb-3">
+                        <label for="origin">Xuất xứ</label>
+                        <input type="text" name="origin" class="form-control" placeholder="Xuất xứ">
+                        <p class="text-danger" id="error-origin"></p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="material">Chất liệu</label>
+                        <input type="text" name="material" class="form-control" placeholder="Chất liệu">
+                        <p class="text-danger" id="error-material"></p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="dimensions">Kích thước</label>
+                        <input type="text" name="dimensions" class="form-control" placeholder="Kích thước sản phẩm">
+                        <p class="text-danger" id="error-dimensions"></p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="color">Màu sắc</label>
+                        <input type="text" name="color" class="form-control" placeholder="Màu sắc sản phẩm">
+                        <p class="text-danger" id="error-color"></p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="warranty">Bảo hành</label>
+                        <input type="text" name="warranty" class="form-control" placeholder="Bảo hành sản phẩm">
+                        <p class="text-danger" id="error-warranty"></p>
+                    </div>
+
                     <div class="col-md-12 mb-3">
                         <label for="description">Mô tả</label>
                         <textarea name="description" class="form-control" placeholder="Mô tả sản phẩm"></textarea>

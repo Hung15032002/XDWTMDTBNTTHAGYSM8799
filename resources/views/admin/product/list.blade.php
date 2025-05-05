@@ -24,11 +24,16 @@
                             <th>Ảnh</th>
                             <th>Giá</th>
                             <th>Mã SP</th>
-                            <th>Số Lượng</th>
+                            <th>Số lượng</th>
                             <th>Thương hiệu</th>
                             <th>Danh mục phụ</th>
-                            <th>Trạng Thái</th>
-                            <th>Hành Động</th>
+                            <th>Xuất xứ</th>
+                            <th>Chất liệu</th>
+                            <th>Kích thước</th>
+                            <th>Màu sắc</th>
+                            <th>Bảo hành</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,6 +52,11 @@
                             <td>{{ $product->qty }}</td>
                             <td>{{ $product->brand->name ?? 'Không có' }}</td>
                             <td>{{ $product->subcategory->name ?? 'Không có' }}</td>
+                            <td>{{ $product->origin ?? 'N/A' }}</td>
+                            <td>{{ $product->material ?? 'N/A' }}</td>
+                            <td>{{ $product->dimensions ?? 'N/A' }}</td>
+                            <td>{{ $product->color ?? 'N/A' }}</td>
+                            <td>{{ $product->warranty ?? 'N/A' }}</td>
                             <td>
                                 @if ($product->status == 1)
                                     <svg class="text-success-500 h-6 w-6 text-success" xmlns="http://www.w3.org/2000/svg" fill="none"

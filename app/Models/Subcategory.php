@@ -9,15 +9,26 @@ class Subcategory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'slug',
+        'status',
+        'category_id'
+    ];
 
-    // Mối quan hệ với Product
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
+    /**
+     * Một subcategory thuộc về một category
+     */
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    /**
+     * Một subcategory có nhiều sản phẩm
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

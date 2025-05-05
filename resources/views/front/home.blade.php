@@ -1,63 +1,62 @@
 @extends('front.layout.app')
+
 @section('content')
+
+<!-- Section 1: Carousel -->
 <section class="section-1">
     <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
         <div class="carousel-inner">
+
+            <!-- Slide 1 -->
             <div class="carousel-item active">
-                <!-- <img src="user_ass/fimages/carousel-1.jpg" class="d-block w-100" alt=""> -->
-
                 <picture>
-                    <source media="(max-width: 799px)" srcset="user_ass/images/anhslide/slide1.jpg" />
-                    <source media="(min-width: 800px)" srcset="user_ass/images/anhslide/slide1.jpg" />
-                    <img src="user_ass/fimages/carousel-1.jpg" alt="" />
+                    <source media="(max-width: 799px)" srcset="{{ asset('user_ass/images/anhslide/slide1.jpg') }}" />
+                    <source media="(min-width: 800px)" srcset="{{ asset('user_ass/images/anhslide/slide1.jpg') }}" />
+                    <img src="{{ asset('user_ass/images/anhslide/slide1.jpg') }}" class="d-block w-100" alt="Slide 1" />
                 </picture>
-
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3">
                         <h1 class="display-4 text-white mb-3">NỘI THẤT ĐÀ NẴNG</h1>
                         <p class="mx-md-5 px-5">Nơi trang trí theo phong cách của bạn</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop')}}">Shop Now</a>
-                  </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                
-                <picture>
-                    <source media="(max-width: 799px)" srcset="user_ass/images/anhslide/slide2.jpg" />
-                    <source media="(min-width: 800px)" srcset="user_ass/images/anhslide/slide2.jpg" />
-                    <img src="user_ass/fimages/carousel-2.jpg" alt="" />
-                </picture>
-
-                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                    <div class="p-3">
-                        <h1 class="display-4 text-white mb-3">NỘI THẤT ĐÀ NẴNG</h1>
-                        <p class="mx-md-5 px-5">Nơi trang trí theo phong cách của bạn</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop')}}">Shop Now</a>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop') }}">Shop Now</a>
                     </div>
                 </div>
             </div>
-            <div class="carousel-item">
-                <!-- <img src="user_ass/fimages/carousel-3.jpg" class="d-block w-100" alt=""> -->
 
+            <!-- Slide 2 -->
+            <div class="carousel-item">
                 <picture>
-                    <source media="(max-width: 799px)" srcset="user_ass/images/anhslide/slide3.jpg" />
-                    <source media="(min-width: 800px)" srcset="user_ass/images/anhslide/slide3.jpg" />
-                    <img src="images/carousel-2.jpg" alt="" />
-                </picture>
-                <picture>
-                    <source media="(max-width: 799px)" srcset="user_ass/images/anhslide/slide4.jpg" />
-                    <source media="(min-width: 800px)" srcset="user_ass/images/anhslide/slide4.jpg" />
-                    <img src="images/carousel-2.jpg" alt="" />
+                    <source media="(max-width: 799px)" srcset="{{ asset('user_ass/images/anhslide/slide2.jpg') }}" />
+                    <source media="(min-width: 800px)" srcset="{{ asset('user_ass/images/anhslide/slide2.jpg') }}" />
+                    <img src="{{ asset('user_ass/images/anhslide/slide2.jpg') }}" class="d-block w-100" alt="Slide 2" />
                 </picture>
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3">
                         <h1 class="display-4 text-white mb-3">NỘI THẤT ĐÀ NẴNG</h1>
                         <p class="mx-md-5 px-5">Nơi trang trí theo phong cách của bạn</p>
-                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop')}}">Shop Now</a>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop') }}">Shop Now</a>
                     </div>
                 </div>
             </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <picture>
+                    <source media="(max-width: 799px)" srcset="{{ asset('user_ass/images/anhslide/slide3.jpg') }}" />
+                    <source media="(min-width: 800px)" srcset="{{ asset('user_ass/images/anhslide/slide3.jpg') }}" />
+                    <img src="{{ asset('user_ass/images/anhslide/slide3.jpg') }}" class="d-block w-100" alt="Slide 3" />
+                </picture>
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                    <div class="p-3">
+                        <h1 class="display-4 text-white mb-3">NỘI THẤT ĐÀ NẴNG</h1>
+                        <p class="mx-md-5 px-5">Nơi trang trí theo phong cách của bạn</p>
+                        <a class="btn btn-outline-light py-2 px-4 mt-3" href="{{ route('front.shop') }}">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
+        <!-- Carousel controls -->
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
@@ -68,50 +67,43 @@
         </button>
     </div>
 </section>
+
+<!-- Section 2: Lợi ích -->
 <section class="section-2">
     <div class="container">
         <div class="row">
-            <div class="col-lg-3">
-                <div class="box shadow-lg">
-                    <div class="fa icon fa-check text-primary m-0 mr-3"></div>
-                    <h2 class="font-weight-semi-bold m-0">Chất Lượng Tốt</h2>
-                </div>                    
-            </div>
-            <div class="col-lg-3">
-                <div class="box shadow-lg">
-                    <div class="fa icon fa-shipping-fast text-primary m-0 mr-3"></div>
-                    <h2 class="font-weight-semi-bold m-0">Miễn Phí Vận Chuyển</h2>
-                </div>                    
-            </div>
-            <div class="col-lg-3">
-                <div class="box shadow-lg">
-                    <div class="fa icon fa-exchange-alt text-primary m-0 mr-3"></div>
-                    <h2 class="font-weight-semi-bold m-0">Hoàn Trả Trong 2 Tuần</h2>
-                </div>                    
-            </div>
-            <div class="col-lg-3">
-                <div class="box shadow-lg">
-                    <div class="fa icon fa-phone-volume text-primary m-0 mr-3"></div>
-                    <h2 class="font-weight-semi-bold m-0">Hỗ Trợ 24/7</h2>
-                </div>                    
-            </div>
+            @php
+                $features = [
+                    ['icon' => 'fa-check', 'text' => 'Chất Lượng Tốt'],
+                    ['icon' => 'fa-shipping-fast', 'text' => 'Miễn Phí Vận Chuyển'],
+                    ['icon' => 'fa-exchange-alt', 'text' => 'Hoàn Trả Trong 2 Tuần'],
+                    ['icon' => 'fa-phone-volume', 'text' => 'Hỗ Trợ 24/7']
+                ];
+            @endphp
+            @foreach($features as $feature)
+                <div class="col-lg-3">
+                    <div class="box shadow-lg d-flex align-items-center p-3">
+                        <div class="fa icon {{ $feature['icon'] }} text-primary me-3"></div>
+                        <h2 class="font-weight-semi-bold m-0">{{ $feature['text'] }}</h2>
+                    </div>                    
+                </div>
+            @endforeach
         </div>
     </div>
 </section>
 
+<!-- Section 3: Danh mục sản phẩm -->
 <section class="section-3">
     <div class="container">
         <div class="section-title">
             <h2>DANH MỤC SẢN PHẨM</h2>
         </div>
         <div class="row pb-3">
-            <!-- Lặp qua các danh mục -->
             @foreach($categories as $category)
             <div class="col-lg-3">
                 <div class="cat-card">
                     <div class="left">
-                        <img src="{{ asset('uploads/category/thumb/'.$category->image) }}" alt="{{ $category->name }}" class="img-fluid">
-
+                        <img src="{{ asset('uploads/category/thumb/' . $category->image) }}" alt="{{ $category->name }}" class="img-fluid">
                     </div>
                     <div class="right">
                         <div class="cat-data">
@@ -124,18 +116,20 @@
         </div>
     </div>
 </section>
+
+<!-- Section 4: Sản phẩm -->
 <section class="section-4 pt-5">
     <div class="container">
         <div class="section-title">
-            <h2> SẢN PHẨM </h2>
+            <h2>SẢN PHẨM</h2>
         </div>    
         <div class="row pb-3">
             @foreach($products as $product)
             <div class="col-md-3">
                 <div class="card product-card">
                     <div class="product-image position-relative">
-                        <a href="#" class="product-img">
-                            <img class="card-img-top" src="{{ asset('uploads/product/'.$product->image) }}" alt="{{ $product->name }}">
+                        <a href="{{ route('front.product.show', $product->id) }}" class="product-img">
+                            <img class="card-img-top" src="{{ asset('uploads/product/thumb/' . $product->image) }}" alt="{{ $product->name }}">
                         </a>
                         <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
                         <div class="product-action">
@@ -145,12 +139,11 @@
                         </div>
                     </div>
                     <div class="card-body text-center mt-3">
-                        <a class="h6 link" href="#">{{ $product->name }}</a>
+                        <a class="h6 link" href="{{ route('front.product.show', $product->id) }}">{{ $product->name }}</a>
                         <div class="price mt-2">
-                            <!-- Hiển thị giá với định dạng VND -->
                             <span class="h5"><strong>{{ number_format($product->price, 0, ',', '.') }} VND</strong></span>
                             @if($product->old_price)
-                            <span class="h6 text-underline"><del>{{ number_format($product->old_price, 0, ',', '.') }} VND</del></span>
+                            <span class="h6 text-muted ms-2"><del>{{ number_format($product->old_price, 0, ',', '.') }} VND</del></span>
                             @endif
                         </div>
                     </div>
@@ -160,5 +153,5 @@
         </div>
     </div>
 </section>
-@endsection
 
+@endsection
