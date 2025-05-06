@@ -147,7 +147,7 @@
                                         <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
                                         <div class="product-action">
                                             <!-- Form for adding to cart -->
-                                            <form method="POST" action="{{ route('cart.addToCart', ['id' => $product->id]) }}" class="add-to-cart-form d-inline" data-product-id="{{ $product->id }}">
+                                            <form method="POST" action="{{ route('cart.addToCart', ['id' => $product->id]) }}" class="add-to-cart-form">
                                                 @csrf
                                                 <input type="hidden" name="quantity" value="1">
                                                 <button type="submit" class="btn btn-dark mt-2 add-to-cart-btn">
@@ -183,53 +183,53 @@
         </div>
     </section>
 </section>
+@endsection
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 document.querySelectorAll('.add-to-cart-form').forEach(form => {
     form.addEventListener('submit', function (e) {
-        e.preventDefault(); // Ngừng reload trang
+        e.preventDefault(); // Ngừng việc gửi form mặc định
 
-        const productId = form.getAttribute('data-product-id');
+        const formButton = form.querySelector('.add-to-cart-btn'); // Lấy nút add-to-cart
+        if (formButton.disabled) return; // Nếu nút đang bị vô hiệu hóa, không làm gì thêm
+
+        formButton.disabled = true; // Vô hiệu hóa nút để tránh việc bấm nhiều lần
+
+        const url = form.getAttribute('action');
         const quantity = form.querySelector('input[name="quantity"]').value;
 
-        // Tạo đối tượng FormData để gửi dữ liệu giống như submit form thật
-        const formData = new FormData();
-        formData.append('quantity', quantity);
-        formData.append('_token', '{{ csrf_token() }}');
-
-        // Gửi yêu cầu AJAX
-        fetch(`/add-to-cart/${productId}`, {
+        $.ajax({
+            url: url,
             method: 'POST',
-            headers: {
-                'Accept': 'application/json'
+            data: {
+                quantity: quantity,  // Dữ liệu gửi lên là dưới dạng form thông thường
             },
-            body: formData
-        })
-        .then(response => response.json()) // Đọc phản hồi dưới dạng JSON
-        .then(data => {
-            // Nếu thêm vào giỏ thành công
-            if (data.success) {
-                toastr.success(data.success); // Hiển thị thông báo thành công
-                const cartCountElement = document.getElementById('cart-count');
-                if (cartCountElement) {
-                    cartCountElement.textContent = data.cartCount; // Cập nhật số lượng giỏ hàng
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function (data) {
+                if (data.success) {
+                    toastr.success(data.success); // Hiển thị thông báo thành công
+                    const cartCountElement = document.getElementById('cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.cartCount; // Cập nhật số lượng giỏ hàng
+                    }
+                } else {
+                    toastr.error(data.error || 'Thêm sản phẩm thất bại!');
                 }
-            } else {
-                toastr.error(data.error || 'Thêm sản phẩm thất bại!');
+            },
+            error: function (xhr) {
+                const error = xhr.responseJSON?.error || 'Lỗi khi thêm vào giỏ hàng!';
+                toastr.error(error); // Hiển thị lỗi
+            },
+            complete: function() {
+                formButton.disabled = false; // Bật lại nút sau khi xử lý xong
             }
-        })
-        .catch(error => {
-            toastr.error('Lỗi khi thêm vào giỏ hàng!');
-            console.error(error);
         });
     });
 });
-
-</script>
-@endsection
-
 @endsection

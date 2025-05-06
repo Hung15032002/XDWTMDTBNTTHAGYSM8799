@@ -4,7 +4,7 @@
 
 <!-- Section 1: Carousel -->
 <section class="section-1">
-    <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="false">
+    <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
         <div class="carousel-inner">
 
             <!-- Slide 1 -->

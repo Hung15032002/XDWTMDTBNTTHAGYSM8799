@@ -24,11 +24,11 @@
                     <table class="table" id="cart">
                         <thead>
                             <tr>
-                                <th>Item</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Remove</th>
+                                <th>Sản Phẩm</th>
+                                <th>Giá</th>
+                                <th>Số Lượng</th>
+                                <th>Tổng Giá</th>
+                                <th>Xóa</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,7 +41,7 @@
                                                 <h2 class="ml-3">{{ $item['name'] }}</h2>
                                             </div>
                                         </td>
-                                        <td>₫{{ number_format($item['price'], 0, ',', '.') }}</td>
+                                        <td>{{ number_format($item['price'], 0, ',', '.') }} VNĐ</td>
                                         <td>
                                             <div class="input-group quantity mx-auto" style="width: 100px;">
                                                 <div class="input-group-btn">
@@ -69,7 +69,7 @@
                                             </div>
                                         </td>
                                         <td class="item-total">
-                                            ₫{{ number_format($item['quantity'] * $item['price'], 0, ',', '.') }}
+                                            {{ number_format($item['quantity'] * $item['price'], 0, ',', '.') }} VNĐ
                                         </td>
                                         <td>
                                             <a href="javascript:void(0)" class="btn btn-sm btn-danger btn-remove" data-id="{{ $id }}"><i class="fa fa-times"></i></a>
@@ -95,32 +95,28 @@
                     <div class="card-body">
                         @php
                             $total = 0;
-                            $shipping = 20000;
+                            $shipping = 0; // miễn phí vận chuyển
                         @endphp
                         @foreach(session('cart', []) as $item)
                             @php $total += $item['quantity'] * $item['price']; @endphp
                         @endforeach
 
                         <div class="d-flex justify-content-between pb-2">
-                            <div>Subtotal</div>
-                            <div class="subtotal">₫{{ number_format($total, 0, ',', '.') }}</div>
+                            <div>Tổng Toàn Bộ Hóa Đơn</div>
+                            <div class="subtotal">{{ number_format($total, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="d-flex justify-content-between pb-2">
-                            <div>Shipping</div>
-                            <div>₫{{ number_format($shipping, 0, ',', '.') }}</div>
+                            <div>Phí Vận Chuyển</div>
+                            <div>{{ number_format($shipping, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="d-flex justify-content-between summery-end">
-                            <div>Total</div>
-                            <div class="grand-total">₫{{ number_format($total + $shipping, 0, ',', '.') }}</div>
+                            <div>Hóa Đơn Cuối</div>
+                            <div class="grand-total">{{ number_format($total + $shipping, 0, ',', '.') }} VNĐ</div>
                         </div>
                         <div class="pt-5">
-                            <a href="{{ route('cart.checkout') }}" class="btn-dark btn btn-block w-100">Proceed to Checkout</a>
+                            <a href="{{ route('checkout.show') }}" class="btn btn-dark">Thanh Toán</a>
                         </div>
                     </div>
-                </div>
-                <div class="input-group apply-coupan mt-4">
-                    <input type="text" placeholder="Coupon Code" class="form-control">
-                    <button class="btn btn-dark" type="button">Apply Coupon</button>
                 </div>
             </div>
         </div>
@@ -130,87 +126,90 @@
 {{-- Scripts --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    function updateButtonStates(row) {
+        let input = row.find('input[type="number"]');
+        let quantity = parseInt(input.val());
+        let maxQty = parseInt(input.attr('max')) || 1000;
+
+        row.find('.btn-minus').prop('disabled', quantity <= 1);
+        row.find('.btn-plus').prop('disabled', quantity >= maxQty);
+    }
+
     $(function () {
-        // Cập nhật số lượng sản phẩm
+        $('#cart tbody tr').each(function () {
+            updateButtonStates($(this));
+        });
+
         $('.btn-plus, .btn-minus').on('click', function (e) {
             e.preventDefault();
             let button = $(this);
-            let action = button.val();  // 'increase' hoặc 'decrease'
+            let action = button.val();
             let row = button.closest('tr');
             let id = row.data('id');
             let input = row.find('input[type="number"]');
-            let currentQuantity = parseInt(input.val());  // Số lượng hiện tại
+            let currentQuantity = parseInt(input.val());
+            let maxQty = parseInt(input.attr('max')) || 1000;
 
-            // Cập nhật số lượng
-            if (action === 'increase') {
-                currentQuantity++;
-            } else if (action === 'decrease' && currentQuantity > 1) {
-                currentQuantity--;
-            }
+            if (action === 'increase' && currentQuantity >= maxQty) return;
+            if (action === 'decrease' && currentQuantity <= 1) return;
 
-            // Gửi AJAX request để cập nhật giỏ hàng
+            if (action === 'increase') currentQuantity++;
+            if (action === 'decrease') currentQuantity--;
+
             $.ajax({
-                url: "{{ route('cart.update') }}", // Đảm bảo URL đúng
+                url: "{{ route('cart.update') }}",
                 method: "POST",
                 data: {
-                    _token: "{{ csrf_token() }}",  // Đảm bảo CSRF token có trong request
+                    _token: "{{ csrf_token() }}",
                     action: action,
-                    quantity: currentQuantity,  // Gửi số lượng đã thay đổi
+                    quantity: currentQuantity,
                     id: id
                 },
                 success: function (res) {
                     if (res.status) {
-                        input.val(res.quantity);  // Cập nhật lại ô input số lượng
-
-                        // Cập nhật tổng tiền cho sản phẩm này
-                        row.find('.item-total').text('₫' + res.itemTotal.toLocaleString('vi-VN'));
-
-                        // Cập nhật tổng giỏ hàng và tổng tiền thanh toán
-                        $('.subtotal').text('₫' + res.total.toLocaleString('vi-VN'));
-                        $('.grand-total').text('₫' + res.grandTotal.toLocaleString('vi-VN'));
+                        input.val(res.quantity);
+                        row.find('.item-total').text(res.itemTotal.toLocaleString('vi-VN') + ' VNĐ');
+                        $('.subtotal').text(res.total.toLocaleString('vi-VN') + ' VNĐ');
+                        $('.grand-total').text(res.grandTotal.toLocaleString('vi-VN') + ' VNĐ');
+                        updateButtonStates(row);
+                    } else if (res.message) {
+                        alert(res.message);
                     }
                 }
             });
         });
 
-        // Xóa sản phẩm khỏi giỏ hàng
         $('.btn-remove').on('click', function (e) {
             e.preventDefault();
             let id = $(this).data('id');
 
             if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?")) {
                 $.ajax({
-                    url: "{{ url('/cart/remove') }}/" + id,  // Route cần sửa
-                    method: "GET",  // Phương thức GET
+                    url: "{{ url('/cart/remove') }}/" + id,
+                    method: "GET",
                     success: function (res) {
                         if (res.status) {
-                            // Xóa dòng sản phẩm khỏi giỏ hàng
                             $(`tr[data-id="${id}"]`).remove();
-
-                            // Cập nhật lại tổng giỏ hàng
-                            $('.subtotal').text('₫' + res.total.toLocaleString('vi-VN'));
-                            $('.grand-total').text('₫' + res.grandTotal.toLocaleString('vi-VN'));
-
-                            // Cập nhật lại giỏ hàng trên giao diện nếu cần
-                            console.log(res.cart);
+                            $('.subtotal').text(res.total.toLocaleString('vi-VN') + ' VNĐ');
+                            $('.grand-total').text(res.grandTotal.toLocaleString('vi-VN') + ' VNĐ');
+                            $('#cart-count').text(res.cartCount || '0');
                         }
                     }
                 });
             }
         });
 
-        // Xóa toàn bộ giỏ hàng
         $('#clear-cart-btn').on('click', function () {
             if (confirm("Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng?")) {
                 $.ajax({
                     url: "{{ route('cart.clear') }}",
-                    method: "POST",  // Đảm bảo phương thức là POST
+                    method: "POST",
                     data: { _token: "{{ csrf_token() }}" },
                     success: function (res) {
                         if (res.status) {
-                            $('#cart tbody').empty();  // Xóa tất cả các sản phẩm trong giỏ
-                            $('.subtotal').text('₫0');
-                            $('.grand-total').text('₫0');
+                            $('#cart tbody').empty();
+                            $('.subtotal').text('0 VNĐ');
+                            $('.grand-total').text('0 VNĐ');
                             $('#cart-count').text('0');
                         }
                     }

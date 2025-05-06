@@ -6,11 +6,14 @@ use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\TempImagesController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductShowController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -19,7 +22,7 @@ use Illuminate\Support\Str;
 Route::get('/', [FrontController::class, 'index'])->name('front.home');
 Route::get('/shop', [ShopController::class, 'index'])->name('front.shop');
 Route::get('/shop/category/{id}', [ShopController::class, 'category'])->name('shop.category');
-Route::get('/subcategory-products/{id}', [FrontController::class, 'getProductsBySubcategory']);
+Route::get('/subcategory-products/{id}', [FrontController::class, 'getProductsBySubcategory'])->name('front.subcategory.products');
 
 Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.addToCart');
 
@@ -36,6 +39,12 @@ Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.ch
 Route::post('/cart/update-ajax', [CartController::class, 'ajaxUpdateCart'])->name('cart.update.ajax');
 Route::post('/cart/remove-ajax', [CartController::class, 'ajaxRemoveItem'])->name('cart.remove.ajax');
 Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
+
+// Checkout Routes
+Route::get('/checkout', [CheckoutController::class, 'showCheckout'])->name('checkout.show');
+Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+Route::get('/payment-success', [CheckoutController::class, 'showPaymentSuccess'])->name('payment.success');
+
 
 // Admin Routes
 Route::group(['prefix' => 'admin'], function() {
@@ -81,11 +90,28 @@ Route::group(['prefix' => 'admin'], function() {
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::delete('/products/delete/{id}', [ProductController::class, 'destroy'])->name('products.ajax.destroy');
 
-        // Temp Images Routes
+        Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
+        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('admin.orders.show');
+        Route::post('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+        Route::get('/admin/orders/{order}/edit', [OrderController::class, 'edit'])->name('admin.orders.edit');      
+        Route::put('/admin/orders/{order}', [OrderController::class, 'update'])->name('admin.orders.update');
+        Route::delete('/admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
+
+
+        Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
+        Route::get('/pages/create', [PageController::class, 'create'])->name('pages.create');
+        Route::post('/pages', [PageController::class, 'store'])->name('pages.store');
+        Route::get('/pages/{id}/edit', [PageController::class, 'edit'])->name('pages.edit');
+        Route::put('/pages/{id}', [PageController::class, 'update'])->name('pages.update'); 
+        Route::delete('/pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy');
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
+        
+        
+
+        
     });
 
-    // Get slug from title
+    // Route lấy slug từ title
     Route::get('/getSlug', function(Request $request) {
         if (!empty($request->title)) {
             $slug = Str::slug($request->title);
@@ -95,4 +121,10 @@ Route::group(['prefix' => 'admin'], function() {
             'slug' => $slug,
         ]);
     })->name('getSlug');
+
+    // Route cho trang thông báo thanh toán thành công
+        Route::get('payment-success', function () {
+            return view('payment-success');
+        })->name('payment.success');
+
 });

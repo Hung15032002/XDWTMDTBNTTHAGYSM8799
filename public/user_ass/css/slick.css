@@ -117,3 +117,27 @@
 .slick-arrow.slick-hidden {
     display: none;
 }
+.status-chua_xac_nhan {
+    background-color: #f39c12; /* Vàng */
+    color: white;
+}
+
+.status-da_xac_nhan {
+    background-color: #007bff; /* Xanh dương */
+    color: white;
+}
+
+.status-dang_van_chuyen {
+    background-color: #17a2b8; /* Xanh lá cây */
+    color: white;
+}
+
+.status-hoan_thanh {
+    background-color: #28a745; /* Xanh lá cây đậm */
+    color: white;
+}
+
+.status-huy {
+    background-color: #dc3545; /* Đỏ */
+    color: white;
+}
