@@ -84,7 +84,7 @@ class CheckoutController extends Controller
         $message .= 'Chúng tôi sẽ liên hệ với bạn trong ít phút để hoàn tất giao dịch.';
 
         // Chuyển hướng đến trang thông báo thanh toán thành công và truyền thông báo qua session
-        return redirect()->route('front.payment')->with('success_message', $message);
+        return redirect()->route('payment.success')->with('success_message', $message);
     }
 
     // Phương thức hiển thị thông báo thanh toán thành công

@@ -38,11 +38,13 @@
             </div>
             <div class="col-lg-6 col-6 text-left d-flex justify-content-end align-items-center">
                 {{-- Facebook --}}
-                <a href="{{ $page->facebook_link }}" target="_blank" class="text-dark mx-2">
+                <a href="" target="_blank" class="text-dark mx-2">
+                    {{-- {{ $page->facebook_link }} --}}
                     <i class="fab fa-facebook-f fa-lg"></i> Facebook
                 </a>
                 
-                <a href="{{ $page->zalo_link }}" target="_blank" class="text-dark mx-2">
+                <a href="" target="_blank" class="text-dark mx-2">
+                    {{-- {{ $page->zalo_link }} --}}
                     <i class="fas fa-comment-alt fa-lg"></i> Zalo
                 </a>
                 

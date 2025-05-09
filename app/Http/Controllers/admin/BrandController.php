@@ -78,32 +78,36 @@ class BrandController extends Controller
         // Validate dữ liệu
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:brands,slug,' . $id,
+            'slug' => 'nullable|string|max:255|unique:brands,slug,' . $id,  // Kiểm tra trùng slug cho nhãn hàng hiện tại
             'status' => 'required|boolean',
         ]);
-    
+        
         try {
-            // Tạo slug từ tên nếu chưa có slug
+            // Nếu không nhập slug mới, tạo slug từ tên nhãn hàng
             $slug = $request->slug ?: Str::slug($request->name);
-
+        
             // Cập nhật dữ liệu
             $brand = Brand::findOrFail($id);
             $brand->name = $request->name;
-            $brand->slug = $slug;
+            $brand->slug = $slug;  // Cập nhật slug mới
             $brand->status = $request->status;
             $brand->save();
-    
-            // Flash message thành công
-            session()->flash('success', 'Nhãn hàng đã được cập nhật thành công!');
-            
-            return redirect()->route('brands.index');  // Chuyển về trang danh sách nhãn hàng
+        
+            // Trả về JSON response
+            return response()->json([
+                'status' => true,
+                'message' => 'Nhãn hàng đã được cập nhật thành công!',
+            ]);
         } catch (\Exception $e) {
-            // Flash message lỗi nếu có sự cố khi cập nhật
-            session()->flash('error', 'Có lỗi xảy ra khi cập nhật nhãn hàng. Vui lòng thử lại!');
-            
-            return redirect()->back();  // Quay lại trang hiện tại
+            // Trả về lỗi nếu có
+            return response()->json([
+                'status' => false,
+                'message' => 'Có lỗi xảy ra khi cập nhật nhãn hàng. Vui lòng thử lại!',
+            ]);
         }
     }
+    
+
 
     // Xóa nhãn hàng
     public function destroy($id)

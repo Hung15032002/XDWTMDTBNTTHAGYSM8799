@@ -44,7 +44,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="pages.html" class="nav-link">
+                <a href="" class="nav-link">
+                    <i class="nav-icon fas fa-dollar-sign"></i>
+                    <p>Thanh Toán</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route ('pages.index')}}" class="nav-link">
                     <i class="nav-icon  far fa-file-alt"></i>
                     <p>Pages</p>
                 </a>

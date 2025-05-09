@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\admin;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -8,12 +8,7 @@ use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
-    /**
-     * Hiển thị danh sách đơn hàng.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\View\View
-     */
+    
     public function index(Request $request)
     {
         $query = Order::with('orderItems')->orderByDesc('created_at');

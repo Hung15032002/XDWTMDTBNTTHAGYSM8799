@@ -3,8 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\Admin\AdminLoginController;
+use App\Http\Controllers\Admin\BankTransactionController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\admin\GmailController ;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\SubcategoryController;
@@ -17,6 +19,10 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductShowController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Http\Controllers\IMAPController;
+
+
+
 
 // Frontend Routes
 Route::get('/', [FrontController::class, 'index'])->name('front.home');
@@ -45,6 +51,8 @@ Route::get('/checkout', [CheckoutController::class, 'showCheckout'])->name('chec
 Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/payment-success', [CheckoutController::class, 'showPaymentSuccess'])->name('payment.success');
 
+
+Route::get('/imap/check', [IMAPController::class, 'checkEmails']);
 
 // Admin Routes
 Route::group(['prefix' => 'admin'], function() {
@@ -106,16 +114,27 @@ Route::group(['prefix' => 'admin'], function() {
         Route::delete('/pages/{page}', [PageController::class, 'destroy'])->name('pages.destroy');
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
         
-        
+
+        Route::get('/transactions', [IMAPController::class, 'getTransactions'])->name('transactions.index');
+        Route::get('/test-imap-connection', [IMAPController::class, 'testConnection'])->name('test.imap.connection');
+
+        Route::get('/fetch-transactions', [GmailController::class, 'fetchTransactionsFromGmail'])->name('admin.fetchTransactions');
+
+
 
         
     });
 
-    // Route lấy slug từ title
     Route::get('/getSlug', function(Request $request) {
+        // Khởi tạo biến $slug để tránh lỗi nếu không có title
+        $slug = '';
+    
+        // Kiểm tra xem có title không
         if (!empty($request->title)) {
             $slug = Str::slug($request->title);
         }
+    
+        // Trả về response JSON với status và slug
         return response()->json([
             'status' => true,
             'slug' => $slug,
@@ -123,8 +142,8 @@ Route::group(['prefix' => 'admin'], function() {
     })->name('getSlug');
 
     // Route cho trang thông báo thanh toán thành công
-        Route::get('payment-success', function () {
-            return view('payment-success');
-        })->name('payment.success');
+    Route::get('payment-success', function () {
+        return view('payment-success');
+    })->name('admin.payment.success');
 
 });
