@@ -19,7 +19,6 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductShowController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Http\Controllers\IMAPController;
 
 
 
@@ -51,8 +50,6 @@ Route::get('/checkout', [CheckoutController::class, 'showCheckout'])->name('chec
 Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/payment-success', [CheckoutController::class, 'showPaymentSuccess'])->name('payment.success');
 
-
-Route::get('/imap/check', [IMAPController::class, 'checkEmails']);
 
 // Admin Routes
 Route::group(['prefix' => 'admin'], function() {
@@ -115,11 +112,10 @@ Route::group(['prefix' => 'admin'], function() {
         Route::post('/upload-temp-image', [TempImagesController::class, 'create'])->name('temp-images.create');
         
 
-        Route::get('/transactions', [IMAPController::class, 'getTransactions'])->name('transactions.index');
-        Route::get('/test-imap-connection', [IMAPController::class, 'testConnection'])->name('test.imap.connection');
-
-        Route::get('/fetch-transactions', [GmailController::class, 'fetchTransactionsFromGmail'])->name('admin.fetchTransactions');
-
+        Route::get('/gmail/auth', [GmailController::class, 'redirectToGoogle'])->name('gmail.auth');
+        Route::get('/gmail/callback', [GmailController::class, 'handleGoogleCallback'])->name('gmail.callback');
+        Route::get('/gmail/list', [GmailController::class, 'listEmails'])->name('gmail.list');  // Chỉ cần 1 route này cho việc hiển thị danh sách email
+        Route::get('/gmail/email/{id}', [GmailController::class, 'viewEmail'])->name('gmail.view');  // Hiển thị chi tiết email
 
 
         

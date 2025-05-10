@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-5">
-    <h2>Danh sách giao dịch</h2>
+    <h2>Thông báo giao dịch từ Sacombank</h2>
 
     @if(session('success'))
         <div class="alert alert-success">
@@ -10,26 +10,34 @@
         </div>
     @endif
 
+    @if(isset($error))
+        <div class="alert alert-danger">
+            {{ $error }}
+        </div>
+    @endif
+
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Tài khoản</th>
-                <th>Ngày giao dịch</th>
-                <th>Số tiền</th>
+                <th>Ngày</th>
+                <th>Phát sinh</th>
                 <th>Số dư khả dụng</th>
-                <th>Mô tả</th>
+                <th>Nội dung</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($transactions as $transaction)
+            @forelse ($transactions as $transaction)
                 <tr>
-                    <td>{{ $transaction->account_number }}</td>
-                    <td>{{ $transaction->transaction_date->format('d/m/Y H:i') }}</td>
-                    <td>{{ number_format($transaction->amount, 0, ',', '.') }} VNĐ</td>
-                    <td>{{ number_format($transaction->balance, 0, ',', '.') }} VNĐ</td>
-                    <td>{{ $transaction->description }}</td>
+                    <td>{{ $transaction['date'] ?? 'N/A' }}</td>
+                    <td>{{ $transaction['transaction'] ?? 'N/A' }}</td>
+                    <td>{{ $transaction['balance'] ?? 'N/A' }}</td>
+                    <td>{{ $transaction['description'] ?? 'N/A' }}</td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="4" class="text-center text-danger">Không có giao dịch nào từ Sacombank.</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 </div>
