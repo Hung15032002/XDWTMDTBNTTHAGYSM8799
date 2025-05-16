@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Google\Client as GoogleClient;
 use Google\Service\Gmail;
+use App\Models\Transaction;
 
 class GmailController extends Controller
 {
@@ -102,7 +103,11 @@ class GmailController extends Controller
                         $bodyText = $this->getEmailBodyText($messageData['payload']);
                         $transactionInfo = $this->extractTransactionInfo($bodyText);
                         if ($transactionInfo) {
+                            // Thêm vào mảng hiển thị
                             $transactions[] = $transactionInfo;
+
+                            // Lưu vào database
+                            $this->saveTransaction($transactionInfo);
                         }
                     }
                 }
@@ -176,28 +181,27 @@ class GmailController extends Controller
         $bodyText = strip_tags($bodyText);
 
         // Loại bỏ các phần cảm ơn, liên hệ, bản quyền...
-$bodyText = html_entity_decode($bodyText); // Giải mã HTML như &acirc; → â
+        $bodyText = html_entity_decode($bodyText); // Giải mã HTML như &acirc; → â
 
-$patterns = [
-    '/Trân trọng\s*(cảm ơn)?\s*[\/\.\:\-]*.*/iu',
-    '/Thank you[\s\S]*/iu',
-    '/Liên hệ.*?/iu',
-    '/ask@sacombank\.com\.vn/iu',
-    '/ask@.*/iu',
-    '/www\.sacombank\.com\.vn/iu',
-    '/©.*/iu',
-    '/Ngân Hàng TMCP.*/iu',
-    '/Sacombank.*/iu',
-    '/Tất cả các quyền được bảo hộ.*/iu',
-    '/:?\s*1800\s*5858\s*88.*?/iu',
-    '/\|\s*\|.*/iu',
-    '/Tín\./iu',  // Thêm bộ lọc "Tín."
-];
+        $patterns = [
+            '/Trân trọng\s*(cảm ơn)?\s*[\/\.\:\-]*.*/iu',
+            '/Thank you[\s\S]*/iu',
+            '/Liên hệ.*?/iu',
+            '/ask@sacombank\.com\.vn/iu',
+            '/ask@.*/iu',
+            '/www\.sacombank\.com\.vn/iu',
+            '/©.*/iu',
+            '/Ngân Hàng TMCP.*/iu',
+            '/Sacombank.*/iu',
+            '/Tất cả các quyền được bảo hộ.*/iu',
+            '/:?\s*1800\s*5858\s*88.*?/iu',
+            '/\|\s*\|.*/iu',
+            '/Tín\./iu',
+        ];
 
-foreach ($patterns as $pattern) {
-    $bodyText = preg_replace($pattern, '', $bodyText);
-}
-
+        foreach ($patterns as $pattern) {
+            $bodyText = preg_replace($pattern, '', $bodyText);
+        }
 
         $bodyText = preg_replace('/\s+/', ' ', $bodyText);
         $bodyText = trim($bodyText);
@@ -226,5 +230,35 @@ foreach ($patterns as $pattern) {
         }
 
         return empty($info) ? null : $info;
+    }
+
+    private function saveTransaction(array $info)
+    {
+        // Kiểm tra và chuẩn hóa dữ liệu trước khi lưu
+        if (empty($info['account']) || empty($info['date']) || empty($info['transaction'])) {
+            return false;
+        }
+
+        // Chuyển định dạng ngày string sang datetime
+        $transactionDate = \DateTime::createFromFormat('d/m/Y H:i:s', trim($info['date']));
+        if (!$transactionDate) {
+            // Thử định dạng khác hoặc lấy ngày hiện tại nếu không parse được
+            $transactionDate = now();
+        }
+
+        // Lưu hoặc cập nhật giao dịch
+        Transaction::updateOrCreate(
+            [
+                'account_number' => $info['account'],
+                'transaction_date' => $transactionDate->format('Y-m-d H:i:s'),
+                'amount' => $info['transaction'],
+                'description' => $info['description'] ?? '',
+            ],
+            [
+                'balance' => $info['balance'] ?? '',
+            ]
+        );
+
+        return true;
     }
 }

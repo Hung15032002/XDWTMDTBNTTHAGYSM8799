@@ -118,6 +118,18 @@
       </div>
       <div class="modal-body">
         {{ session('success_modal') }}
+
+        <hr>
+        <h6>Mã QR chuyển khoản:</h6>
+        @php
+            $amount = number_format(session('deposit_amount', 50000), 0, ',', '.'); // fallback 50k nếu chưa set
+            $qrContent = "Người nhận: Nguyễn Văn A\n"
+                       . "Số tài khoản: 123456789\n"
+                       . "Ngân hàng: Vietcombank\n"
+                       . "Số tiền: {$amount} VND\n"
+                       . "Nội dung: THANHTOAN_" . \Illuminate\Support\Str::slug(session('success_modal'));
+        @endphp
+        {!! QrCode::encoding('UTF-8')->size(200)->generate($qrContent) !!}
       </div>
       <div class="modal-footer">
         <a href="{{ route('home') }}" class="btn btn-primary">Về trang chủ</a>

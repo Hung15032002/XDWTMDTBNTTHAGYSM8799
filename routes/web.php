@@ -117,7 +117,6 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/gmail/list', [GmailController::class, 'listEmails'])->name('gmail.list');  // Chỉ cần 1 route này cho việc hiển thị danh sách email
         Route::get('/gmail/email/{id}', [GmailController::class, 'viewEmail'])->name('gmail.view');  // Hiển thị chi tiết email
 
-
         
     });
 
