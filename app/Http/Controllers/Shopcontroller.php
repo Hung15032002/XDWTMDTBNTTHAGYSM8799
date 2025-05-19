@@ -7,6 +7,8 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Phpml\Association\Apriori;
 
 class ShopController extends Controller
 {
@@ -67,7 +69,50 @@ class ShopController extends Controller
         $products = $products->paginate(12);
         $products->appends($request->all());
 
-        return view('front.shop', compact('categories', 'brands', 'subcategories', 'products'));
+        // ========================
+        // 🧠 Gợi ý sản phẩm bằng AI
+        // ========================
+        $productNames = $products->pluck('name')->toArray();
+
+        // Lấy đơn hàng và gom sản phẩm theo order
+        $orders = DB::table('order_items')
+            ->select('order_id', DB::raw('GROUP_CONCAT(name) as items'))
+            ->groupBy('order_id')
+            ->get();
+
+        // Chuẩn bị dữ liệu cho Apriori
+        $samples = [];
+        foreach ($orders as $order) {
+            $samples[] = explode(',', $order->items);
+        }
+
+        // Chạy thuật toán Apriori
+        $associator = new Apriori(0.2, 0.4); // có thể chỉnh support/confidence tùy dataset
+        $associator->train($samples, []);
+        $rules = $associator->getRules();
+
+        // Lấy danh sách gợi ý từ các sản phẩm đang hiện
+        $recommendations = collect();
+        foreach ($productNames as $name) {
+            $match = collect($rules)->filter(function ($rule) use ($name) {
+                return in_array($name, $rule['antecedent']);
+            })->pluck('consequent')->flatten();
+
+            $recommendations = $recommendations->merge($match);
+        }
+
+        $recommendations = $recommendations->unique();
+
+        // Truy vấn lại các sản phẩm gợi ý
+        $recommendedProducts = Product::whereIn('name', $recommendations)->get();
+
+        return view('front.shop', compact(
+            'categories',
+            'brands',
+            'subcategories',
+            'products',
+            'recommendedProducts'
+        ));
     }
 
     // Hiển thị sản phẩm theo danh mục

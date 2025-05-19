@@ -146,30 +146,46 @@ class ProductController extends Controller
             if (!File::exists(public_path('uploads/product/'))) {
                 File::makeDirectory(public_path('uploads/product/'), 0777, true);
             }
-
             if (!File::exists(public_path('uploads/product/thumb/'))) {
                 File::makeDirectory(public_path('uploads/product/thumb/'), 0777, true);
             }
 
+            // Copy ảnh gốc sang thư mục uploads
             File::copy($sourcePath, $destPath);
 
+            // Resize ảnh để tạo thumb
             $manager = new ImageManager(new Driver());
-            $image = $manager->read($sourcePath)->scale(500, 500);
+            $image = $manager->read($sourcePath);
+
+            $image->resize(500, 500, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
             $encoded = $image->encode(new JpegEncoder());
             file_put_contents($thumbPath, $encoded);
 
-            if ($isUpdate && $product->image && File::exists(public_path('uploads/product/' . $product->image))) {
-                File::delete(public_path('uploads/product/' . $product->image));
-                File::delete(public_path('uploads/product/thumb/' . $product->image));
+            // Nếu update thì xóa ảnh cũ
+            if ($isUpdate && $product->image) {
+                $oldImagePath = public_path('uploads/product/' . $product->image);
+                $oldThumbPath = public_path('uploads/product/thumb/' . $product->image);
+                if (File::exists($oldImagePath)) {
+                    File::delete($oldImagePath);
+                }
+                if (File::exists($oldThumbPath)) {
+                    File::delete($oldThumbPath);
+                }
             }
 
+            // Cập nhật tên ảnh mới vào product
             $product->image = $newImageName;
             $product->save();
 
+            // Xóa file temp và bản ghi tempImage
             File::delete($sourcePath);
             $tempImage->delete();
 
-            break;
+            break; // Nếu chỉ lưu 1 ảnh, xóa break để lưu nhiều ảnh
         }
     }
 

@@ -30,7 +30,7 @@ class SubcategoryController extends Controller
     }
 
     // Phân trang kết quả
-    $subCategories = $subCategories->paginate(10);
+    $subCategories = $subCategories->paginate(20);
 
     // Trả về view với dữ liệu
     return view('admin.subcategory.list', compact('subCategories'));
@@ -61,9 +61,10 @@ class SubcategoryController extends Controller
 
         $request->session()->flash('Thêm mới loại sản phẩm thành công ! ');
 
-        return response([
+       return response([
             'status' => true,
-            'message'=> 'Thêm mới loại sản phẩm thành công !'
+            'message'=> 'Thêm mới loại sản phẩm thành công!',
+            'redirect_url' => route('subcategories.index')
         ]);
        } else{
         return response([

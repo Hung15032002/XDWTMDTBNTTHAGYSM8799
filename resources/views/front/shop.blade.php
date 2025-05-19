@@ -142,11 +142,10 @@
                                 <div class="card product-card">
                                     <div class="product-image position-relative">
                                         <a href="{{ route('front.product.show', $product->id) }}" class="product-img">
-                                            <img class="card-img-top" src="{{ asset('uploads/product/' . $product->image) }}" alt="{{ $product->name }}">
+                                            <img class="card-img-top" src="{{ asset('uploads/product/thumb/' . $product->image) }}" alt="{{ $product->name }}">
                                         </a>
                                         <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
                                         <div class="product-action">
-                                            <!-- Form for adding to cart -->
                                             <form method="POST" action="{{ route('cart.addToCart', ['id' => $product->id]) }}" class="add-to-cart-form">
                                                 @csrf
                                                 <input type="hidden" name="quantity" value="1">
@@ -174,6 +173,45 @@
                         @endforelse
                     </div>
 
+                    <!-- Gợi ý sản phẩm AI -->
+                    @if(isset($recommendedProducts) && $recommendedProducts->count())
+                        <div class="mt-5">
+                            <h4 class="mb-4">🧠 Có thể bạn sẽ thích</h4>
+                            <div class="row">
+                                @foreach($recommendedProducts as $rec)
+                                    <div class="col-md-3 mb-4">
+                                        <div class="card product-card h-100">
+                                            <div class="product-image position-relative">
+                                                <a href="{{ route('front.product.show', $rec->id) }}" class="product-img">
+                                                    <img class="card-img-top" src="{{ asset('uploads/product/thumb/' . $rec->image) }}" alt="{{ $rec->name }}">
+                                                </a>
+                                                <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
+                                                <div class="product-action">
+                                                    <form method="POST" action="{{ route('cart.addToCart', ['id' => $rec->id]) }}" class="add-to-cart-form">
+                                                        @csrf
+                                                        <input type="hidden" name="quantity" value="1">
+                                                        <button type="submit" class="btn btn-dark mt-2 add-to-cart-btn">
+                                                            <i class="fa fa-shopping-cart"></i> Add To Cart
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="card-body text-center mt-3">
+                                                <a class="h6 link" href="{{ route('front.product.show', $rec->id) }}">{{ $rec->name }}</a>
+                                                <div class="price mt-2">
+                                                    <span class="h5"><strong>{{ number_format($rec->price) }} VND</strong></span>
+                                                    @if($rec->old_price)
+                                                        <span class="h6 text-underline"><del>{{ number_format($rec->old_price) }} VND</del></span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Pagination -->
                     <div class="mt-4">
                         {!! $products->appends(request()->all())->links() !!}
@@ -192,12 +230,12 @@
 <script>
 document.querySelectorAll('.add-to-cart-form').forEach(form => {
     form.addEventListener('submit', function (e) {
-        e.preventDefault(); // Ngừng việc gửi form mặc định
+        e.preventDefault();
 
-        const formButton = form.querySelector('.add-to-cart-btn'); // Lấy nút add-to-cart
-        if (formButton.disabled) return; // Nếu nút đang bị vô hiệu hóa, không làm gì thêm
+        const formButton = form.querySelector('.add-to-cart-btn');
+        if (formButton.disabled) return;
 
-        formButton.disabled = true; // Vô hiệu hóa nút để tránh việc bấm nhiều lần
+        formButton.disabled = true;
 
         const url = form.getAttribute('action');
         const quantity = form.querySelector('input[name="quantity"]').value;
@@ -206,17 +244,17 @@ document.querySelectorAll('.add-to-cart-form').forEach(form => {
             url: url,
             method: 'POST',
             data: {
-                quantity: quantity,  // Dữ liệu gửi lên là dưới dạng form thông thường
+                quantity: quantity,
             },
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function (data) {
                 if (data.success) {
-                    toastr.success(data.success); // Hiển thị thông báo thành công
+                    toastr.success(data.success);
                     const cartCountElement = document.getElementById('cart-count');
                     if (cartCountElement) {
-                        cartCountElement.textContent = data.cartCount; // Cập nhật số lượng giỏ hàng
+                        cartCountElement.textContent = data.cartCount;
                     }
                 } else {
                     toastr.error(data.error || 'Thêm sản phẩm thất bại!');
@@ -224,12 +262,13 @@ document.querySelectorAll('.add-to-cart-form').forEach(form => {
             },
             error: function (xhr) {
                 const error = xhr.responseJSON?.error || 'Lỗi khi thêm vào giỏ hàng!';
-                toastr.error(error); // Hiển thị lỗi
+                toastr.error(error);
             },
             complete: function() {
-                formButton.disabled = false; // Bật lại nút sau khi xử lý xong
+                formButton.disabled = false;
             }
         });
     });
 });
+</script>
 @endsection

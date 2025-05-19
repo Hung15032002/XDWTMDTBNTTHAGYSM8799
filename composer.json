@@ -11,9 +11,10 @@
         "google/apiclient-services": "^0.396.0",
         "guzzlehttp/guzzle": "^7.9",
         "illuminate/session": "*",
-        "intervention/image": "^3.0",
+        "intervention/image": "^3.11",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "php-ai/php-ml": "^0.10.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "webklex/laravel-imap": "^6.2"
     },
