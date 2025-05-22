@@ -132,11 +132,15 @@
                             <img class="card-img-top" src="{{ asset('uploads/product/thumb/' . $product->image) }}" alt="{{ $product->name }}">
                         </a>
                         <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
-                        <div class="product-action">
-                            <a class="btn btn-dark" href="#">
-                                <i class="fa fa-shopping-cart"></i> Add To Cart
-                            </a>
-                        </div>
+                       <div class="product-action">
+                                            <form method="POST" action="{{ route('cart.addToCart', ['id' => $product->id]) }}" class="add-to-cart-form">
+                                                @csrf
+                                                <input type="hidden" name="quantity" value="1">
+                                                <button type="submit" class="btn btn-dark mt-2 add-to-cart-btn">
+                                                    <i class="fa fa-shopping-cart"></i> Add To Cart
+                                                </button>
+                                            </form>
+                                        </div>
                     </div>
                     <div class="card-body text-center mt-3">
                         <a class="h6 link" href="{{ route('front.product.show', $product->id) }}">{{ $product->name }}</a>
@@ -154,4 +158,53 @@
     </div>
 </section>
 
+@endsection
+@section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+document.querySelectorAll('.add-to-cart-form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formButton = form.querySelector('.add-to-cart-btn');
+        if (formButton.disabled) return;
+
+        formButton.disabled = true;
+
+        const url = form.getAttribute('action');
+        const quantity = form.querySelector('input[name="quantity"]').value;
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                quantity: quantity,
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function (data) {
+                if (data.success) {
+                    toastr.success(data.success);
+                    const cartCountElement = document.getElementById('cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.cartCount;
+                    }
+                } else {
+                    toastr.error(data.error || 'Thêm sản phẩm thất bại!');
+                }
+            },
+            error: function (xhr) {
+                const error = xhr.responseJSON?.error || 'Lỗi khi thêm vào giỏ hàng!';
+                toastr.error(error);
+            },
+            complete: function() {
+                formButton.disabled = false;
+            }
+        });
+    });
+});
+</script>
 @endsection

@@ -74,6 +74,13 @@
                             <strong>Liên hệ:</strong> 
                             <span class="text-success">0123456789</span>
                         </li>
+                          <form method="POST" action="{{ route('cart.addToCart', ['id' => $product->id]) }}" class="mt-3 add-to-cart-form">
+                            @csrf
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
+                            </button>
+                        </form>
                     </ul>
                 </div>
             </div>
@@ -81,95 +88,135 @@
     </div>
 </section>
 
-{{-- <!-- Sản phẩm liên quan -->
-<section class="pt-5 section-8">
-    <div class="container">
-        <div class="section-title">
-            <h2>Sản phẩm liên quan</h2>
-        </div>
-        <div class="row">
-            @forelse($relatedProducts as $related)
-                <div class="col-md-3 mb-4">
-                    <div class="card product-card">
-                        <div class="product-image position-relative">
-                            <a href="{{ route('front.product.show', $related->id) }}" class="product-img">
-                                @php
-                                    $images = explode(',', $related->image); 
-                                    $thumb = isset($images[0]) ? $images[0] : 'default.jpg'; 
-                                @endphp
-                                <img class="card-img-top" 
-                                    src="{{ asset('uploads/product/thumb/' . $thumb) }}" 
-                                    alt="{{ $related->title }}"
-                                    onerror="this.src='{{ asset('uploads/product/thumb/default.jpg') }}';">
-                            </a>
-                            <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
-                            <div class="product-action">
-                                <a class="btn btn-dark" href="">
-                                    <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body text-center mt-3">
-                            <a class="h6 text-underline" href="{{ route('front.product.show', $related->id) }}">{{ $related->title }}</a>
-                            <div class="price mt-2">
-                                <span class="h5"><strong>{{ number_format($related->price, 0) }} VNĐ</strong></span>
-                                @if($related->price_compare)
-                                    <span class="h6 text-underline"><del>{{ number_format($related->price_compare, 0) }} VNĐ</del></span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <p class="text-center">Không có sản phẩm liên quan.</p>
-            @endforelse
-        </div>
-    </div>
-</section> --}}
-
-<!-- Sản phẩm gợi ý -->
+<!-- Sản phẩm liên quan -->
 <section class="pt-5 section-9">
     <div class="container">
-        <div class="section-title">
-            <h2>Sản phẩm gợi ý cho bạn</h2>
-        </div>
-        <div class="row">
-            @forelse($recommendedProducts as $rec)
-                <div class="col-md-3 mb-4">
-                    <div class="card product-card">
-                        <div class="product-image position-relative">
-                            <a href="{{ route('front.product.show', $rec->id) }}" class="product-img">
-                                @php
-                                    $images = explode(',', $rec->image); 
-                                    $thumb = isset($images[0]) ? $images[0] : 'default.jpg'; 
-                                @endphp
-                                <img class="card-img-top" 
-                                    src="{{ asset('uploads/product/thumb/' . $thumb) }}" 
-                                    alt="{{ $rec->title }}"
-                                    onerror="this.src='{{ asset('uploads/product/thumb/default.jpg') }}';">
-                            </a>
-                            <a class="whishlist" href="#"><i class="far fa-heart"></i></a>
-                            <div class="product-action">
-                                <a class="btn btn-dark" href="">
-                                    <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
-                                </a>
+        @if(isset($recommendedProducts) && $recommendedProducts->count())
+            <div class="mt-5">
+                <h4 class="mb-4 fw-bold">Có thể bạn sẽ thích</h4>
+                <div class="row g-4">
+                    @foreach($recommendedProducts as $rec)
+                        <div class="col-6 col-md-3">
+                            <div class="card product-card h-100 shadow-sm border-0">
+                                <div class="position-relative overflow-hidden">
+                                    <a href="{{ route('front.product.show', $rec->id) }}" class="d-block">
+                                        @php
+                                            $images = explode(',', $rec->image);
+                                            $thumb = isset($images[0]) ? $images[0] : 'default.jpg';
+                                        @endphp
+                                        <img class="card-img-top img-fluid rounded-3" 
+                                             src="{{ asset('uploads/product/thumb/' . $thumb) }}" 
+                                             alt="{{ $rec->name }}"
+                                             onerror="this.src='{{ asset('uploads/product/thumb/default.jpg') }}';"
+                                             style="transition: transform 0.3s ease;">
+                                    </a>
+                                    <a href="#" class="whishlist position-absolute top-0 end-0 m-2 text-danger fs-5" title="Thêm vào yêu thích">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                    <div class="product-action position-absolute bottom-0 start-50 translate-middle-x mb-3 d-none">
+                                        <form method="POST" action="{{ route('cart.addToCart', ['id' => $rec->id]) }}" class="add-to-cart-form">
+                                            @csrf
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-dark btn-sm px-3 add-to-cart-btn">
+                                                <i class="fa fa-shopping-cart me-1"></i> Add To Cart
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center py-3">
+                                    <a class="h6 link-dark text-decoration-none d-block mb-2" href="{{ route('front.product.show', $rec->id) }}" title="{{ $rec->name }}">
+                                        {{ \Illuminate\Support\Str::limit($rec->name, 50) }}
+                                    </a>
+                                    <div class="price">
+                                        <span class="h5 fw-bold text-primary">{{ number_format($rec->price, 0, ',', '.') }} VND</span>
+                                        @if($rec->old_price)
+                                            <span class="text-muted ms-2" style="text-decoration: line-through; font-size: 0.9rem;">
+                                                {{ number_format($rec->old_price, 0, ',', '.') }} VND
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="card-body text-center mt-3">
-                            <a class="h6 text-underline" href="{{ route('front.product.show', $rec->id) }}">{{ $rec->title }}</a>
-                            <div class="price mt-2">
-                                <span class="h5"><strong>{{ number_format($rec->price, 0) }} VNĐ</strong></span>
-                                @if($rec->price_compare)
-                                    <span class="h6 text-underline"><del>{{ number_format($rec->price_compare, 0) }} VNĐ</del></span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
-            @empty
-                <p class="text-center">Không có sản phẩm gợi ý.</p>
-            @endforelse
-        </div>
+            </div>
+        @else
+            <p class="text-center text-muted fs-5">Không có sản phẩm gợi ý.</p>
+        @endif
     </div>
 </section>
+
+<style>
+    /* Hover effect cho ảnh */
+    .product-card .card-img-top:hover {
+        transform: scale(1.05);
+    }
+
+    /* Hiện nút Add to Cart khi hover card */
+    .product-card:hover .product-action {
+        display: block !important;
+    }
+
+    /* Tùy chỉnh icon yêu thích */
+    .whishlist:hover {
+        color: #dc3545; /* đỏ bootstrap */
+        cursor: pointer;
+    }
+</style>
+
+
+
+
+
+@endsection
+
+@section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+document.querySelectorAll('.add-to-cart-form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formButton = form.querySelector('.add-to-cart-btn');
+        if (formButton.disabled) return;
+
+        formButton.disabled = true;
+
+        const url = form.getAttribute('action');
+        const quantity = form.querySelector('input[name="quantity"]').value;
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                quantity: quantity,
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function (data) {
+                if (data.success) {
+                    toastr.success(data.success);
+                    const cartCountElement = document.getElementById('cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.cartCount;
+                    }
+                } else {
+                    toastr.error(data.error || 'Thêm sản phẩm thất bại!');
+                }
+            },
+            error: function (xhr) {
+                const error = xhr.responseJSON?.error || 'Lỗi khi thêm vào giỏ hàng!';
+                toastr.error(error);
+            },
+            complete: function() {
+                formButton.disabled = false;
+            }
+        });
+    });
+});
+</script>
 @endsection

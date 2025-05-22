@@ -128,7 +128,7 @@
         </div>
 
         <div class="copyright text-white-50 mt-4">
-            <p class="mb-0">© {{ now()->year }} Amazing Shop. All Rights Reserved</p>
+            <p class="mb-0">© {{ now()->year }} CÁM ƠN QUÝ KHÁCH ĐÃ QUAN TÂM</p>
         </div>
     </div>
 </footer>

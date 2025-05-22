@@ -53,4 +53,5 @@ class FrontController extends Controller
 
     return response()->json(['products' => $products]);
 }
+
 }
