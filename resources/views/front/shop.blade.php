@@ -176,7 +176,7 @@
                     <!-- Gợi ý sản phẩm AI -->
                     @if(isset($recommendedProducts) && $recommendedProducts->count())
                         <div class="mt-5">
-                            <h4 class="mb-4">🧠 Có thể bạn sẽ thích</h4>
+                            <h4 class="mb-4">🧠 Các Sản Phẩm Bán Chạy </h4>
                             <div class="row">
                                 @foreach($recommendedProducts as $rec)
                                     <div class="col-md-3 mb-4">
