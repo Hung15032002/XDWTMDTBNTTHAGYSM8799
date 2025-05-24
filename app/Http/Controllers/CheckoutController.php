@@ -60,7 +60,7 @@ class CheckoutController extends Controller
         'total'          => $total,
         'deposit'        => $deposit,
         'ordered_at'     => Carbon::now(),
-        'status'         => 'pending',  // Trạng thái đơn hàng ban đầu là 'pending'
+        'status'         => 'Chờ xử lý',  // Trạng thái đơn hàng ban đầu là 'pending'
     ]);
 
     // Lưu các sản phẩm trong giỏ vào bảng OrderItem

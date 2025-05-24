@@ -19,6 +19,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductShowController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Admin\DashboardController;
 
 
 
@@ -61,6 +62,8 @@ Route::group(['prefix' => 'admin'], function() {
     Route::group(['Middleware' => 'admin.auth'], function() {
         Route::get('/dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
         Route::get('/logout', [HomeController::class, 'logout'])->name('admin.logout');
+
+        // Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
         // Category Routes
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

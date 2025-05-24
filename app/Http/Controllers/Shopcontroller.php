@@ -87,7 +87,7 @@ class ShopController extends Controller
         }
 
         // Chạy thuật toán Apriori
-        $associator = new Apriori(0.2, 0.4); // có thể chỉnh support/confidence tùy dataset
+        $associator = new Apriori(0.05 ,0.3); // có thể chỉnh support/confidence tùy dataset
         $associator->train($samples, []);
         $rules = $associator->getRules();
 

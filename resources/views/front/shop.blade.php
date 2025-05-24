@@ -227,18 +227,23 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-document.querySelectorAll('.add-to-cart-form').forEach(form => {
-    form.addEventListener('submit', function (e) {
+$(document).ready(function() {
+    // Hủy bỏ các event submit cũ (nếu có) rồi gán lại sự kiện submit cho các form add-to-cart
+    $('.add-to-cart-form').off('submit').on('submit', function (e) {
         e.preventDefault();
 
-        const formButton = form.querySelector('.add-to-cart-btn');
-        if (formButton.disabled) return;
+        const form = this;
+        const formButton = $(form).find('.add-to-cart-btn');
 
-        formButton.disabled = true;
+        // Nếu nút đã disabled thì không làm gì thêm
+        if (formButton.prop('disabled')) return;
 
-        const url = form.getAttribute('action');
-        const quantity = form.querySelector('input[name="quantity"]').value;
+        formButton.prop('disabled', true);
+
+        const url = $(form).attr('action');
+        const quantity = $(form).find('input[name="quantity"]').val();
 
         $.ajax({
             url: url,
@@ -252,6 +257,8 @@ document.querySelectorAll('.add-to-cart-form').forEach(form => {
             success: function (data) {
                 if (data.success) {
                     toastr.success(data.success);
+
+                    // Cập nhật số lượng sản phẩm trong giỏ (nếu có phần tử #cart-count)
                     const cartCountElement = document.getElementById('cart-count');
                     if (cartCountElement) {
                         cartCountElement.textContent = data.cartCount;
@@ -265,7 +272,8 @@ document.querySelectorAll('.add-to-cart-form').forEach(form => {
                 toastr.error(error);
             },
             complete: function() {
-                formButton.disabled = false;
+                // Mở lại nút submit
+                formButton.prop('disabled', false);
             }
         });
     });
