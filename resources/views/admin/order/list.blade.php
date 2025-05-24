@@ -14,7 +14,7 @@
                         <input type="text" name="search" class="form-control float-right" placeholder="Tìm kiếm" value="{{ request('search') }}">
                         <select name="status" class="form-control float-right ml-2" style="width: 150px;">
                             <option value="">Tất cả trạng thái</option>
-                            <option value="{{ \App\Models\Order::STATUS_PENDING }}" {{ request('status') == \App\Models\Order::STATUS_PENDING ? 'selected' : '' }}>Chờ xử lý</option>
+                            <option value="{{ \App\Models\Order::STATUS_PENDING }}" {{ request('status') == \App\Models\Order::STATUS_PENDING ? 'selected' : '' }}>Chưa Xác Nhận</option>
                             <option value="{{ \App\Models\Order::STATUS_CONFIRMED }}" {{ request('status') == \App\Models\Order::STATUS_CONFIRMED ? 'selected' : '' }}>Đã xác nhận</option>
                             <option value="{{ \App\Models\Order::STATUS_SHIPPING }}" {{ request('status') == \App\Models\Order::STATUS_SHIPPING ? 'selected' : '' }}>Đang vận chuyển</option>
                             <option value="{{ \App\Models\Order::STATUS_COMPLETED }}" {{ request('status') == \App\Models\Order::STATUS_COMPLETED ? 'selected' : '' }}>Hoàn thành</option>

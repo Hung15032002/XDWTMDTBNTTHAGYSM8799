@@ -92,19 +92,26 @@ class ShopController extends Controller
         $rules = $associator->getRules();
 
         // Lấy danh sách gợi ý từ các sản phẩm đang hiện
-        $recommendations = collect();
-        foreach ($productNames as $name) {
-            $match = collect($rules)->filter(function ($rule) use ($name) {
+        $matchedRules = collect();
+
+    foreach ($productNames as $name) {
+        $matchedRules = $matchedRules->merge(
+            collect($rules)->filter(function ($rule) use ($name) {
                 return in_array($name, $rule['antecedent']);
-            })->pluck('consequent')->flatten();
+            })
+        );
+    }
 
-            $recommendations = $recommendations->merge($match);
-        }
+    // Sắp xếp theo confidence giảm dần và lấy top 4 sản phẩm (theo consequent)
+    $topConsequents = $matchedRules
+        ->sortByDesc('confidence')
+        ->pluck('consequent')
+        ->flatten()
+        ->unique()
+        ->take(4);
 
-        $recommendations = $recommendations->unique();
-
-        // Truy vấn lại các sản phẩm gợi ý
-        $recommendedProducts = Product::whereIn('name', $recommendations)->get();
+    // Truy vấn sản phẩm từ tên
+    $recommendedProducts = Product::whereIn('name', $topConsequents)->get();
 
         return view('front.shop', compact(
             'categories',
