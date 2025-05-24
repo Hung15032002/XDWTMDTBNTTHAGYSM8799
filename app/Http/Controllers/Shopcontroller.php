@@ -72,7 +72,7 @@ class ShopController extends Controller
         // ========================
         // 🧠 Gợi ý sản phẩm bằng AI
         // ========================
-        $productNames = $products->pluck('name')->toArray();
+        $productNames = Product::where('status', 1)->pluck('name')->toArray();
 
         // Lấy đơn hàng và gom sản phẩm theo order
         $orders = DB::table('order_items')
@@ -87,31 +87,31 @@ class ShopController extends Controller
         }
 
         // Chạy thuật toán Apriori
-        $associator = new Apriori(0.05 ,0.3); // có thể chỉnh support/confidence tùy dataset
+        $associator = new Apriori(0.05, 0.3); // có thể chỉnh support/confidence tùy dataset
         $associator->train($samples, []);
         $rules = $associator->getRules();
 
         // Lấy danh sách gợi ý từ các sản phẩm đang hiện
         $matchedRules = collect();
 
-    foreach ($productNames as $name) {
-        $matchedRules = $matchedRules->merge(
-            collect($rules)->filter(function ($rule) use ($name) {
-                return in_array($name, $rule['antecedent']);
-            })
-        );
-    }
+        foreach ($productNames as $name) {
+            $matchedRules = $matchedRules->merge(
+                collect($rules)->filter(function ($rule) use ($name) {
+                    return in_array($name, $rule['antecedent']);
+                })
+            );
+        }
 
-    // Sắp xếp theo confidence giảm dần và lấy top 4 sản phẩm (theo consequent)
-    $topConsequents = $matchedRules
-        ->sortByDesc('confidence')
-        ->pluck('consequent')
-        ->flatten()
-        ->unique()
-        ->take(4);
+        // Sắp xếp theo confidence giảm dần và lấy top 4 sản phẩm (theo consequent)
+        $topConsequents = $matchedRules
+            ->sortByDesc('confidence')
+            ->pluck('consequent')
+            ->flatten()
+            ->unique()
+            ->take(4);
 
-    // Truy vấn sản phẩm từ tên
-    $recommendedProducts = Product::whereIn('name', $topConsequents)->get();
+        // Truy vấn sản phẩm từ tên
+        $recommendedProducts = Product::whereIn('name', $topConsequents)->get();
 
         return view('front.shop', compact(
             'categories',
